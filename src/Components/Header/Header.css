@@ -1,0 +1,47 @@
+.header {
+    height: 80px;
+    width: auto;
+    position: relative;
+    flex-direction: row;
+    background-color: #282c34;
+    color: white;
+}
+
+.logo {
+    height: 80px;
+    width: auto;
+    position: relative;
+    flex-direction: row;
+    float: left;
+}
+
+.logo img {
+    height: 30px;
+    position: absolute;
+    margin: auto 20px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: white;
+}
+
+.align-vertical-center {
+    float: right;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    flex-direction: row;
+    /* width: 115px; */
+    height: 80px;
+    padding: 0 15px;
+}
+
+.align-vertical-center span {
+    align-self: center;
+    cursor: pointer;
+    flex: 1 1 0%;
+    line-height: 12px;
+    padding: 8px 0 10px 0;
+    margin-left: 10px;
+}
