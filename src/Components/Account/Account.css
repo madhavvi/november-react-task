@@ -1,1 +1,7 @@
-
+.account-container {
+    width: 50vw !important;
+    min-width: 450px;
+    border: 1px solid #80808096;
+    border-radius: 4px;
+    padding: 40px 20px;
+}

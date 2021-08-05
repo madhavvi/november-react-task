@@ -1,27 +1,14 @@
 import React, { useContext } from 'react';
-import { Button, Link } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import { ProfileContext } from '../../Utils/UserContext';
 
 function Profile() {
-    const history = useHistory();
     const { profile } = useContext(ProfileContext);
 
     return (
-        <div>
-            <div className="align-vertical-center">
-                <label>Profile Name:</label>
-                <span>{profile && profile.name}</span>
-
-                <Button 
-                    variant="contained"
-                    size="small" 
-                    color="default"
-                >
-                    <Link onClick={() => history.goBack()}>
-                        Back
-                    </Link>
-                </Button>
+        <div style={{ margin: '0 auto', padding: 30}}>
+            <div >
+                <label>Profile name:</label>
+                <span style={{ padding: '0 10px'}}>{profile && profile.name}</span>
             </div>
         </div>
     )

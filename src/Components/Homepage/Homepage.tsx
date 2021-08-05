@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import { Button, Grid, Link } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -7,29 +8,48 @@ import { UserContext } from '../../Utils/UserContext';
 import AccountSelector from '../Account/AccountSelector';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { selectUserState } from '../../redux/login/loginSelector';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
-function Homepage() {
+interface StateFromProps {
+    usersData: ReturnType<typeof selectUserState>;
+ }
+
+interface DispatchFromProps { }
+
+type Props = StateFromProps & DispatchFromProps;
+
+const Homepage: React.FC<Props> = ({
+    usersData,
+}) => {
     const history = useHistory();
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const [openModal, setOpenModal] = useState(false);
-    const [ currentuser, setCurrentuser] = useState();
-    let userData = user && user.user;
+    const [ currentuser, setCurrentuser] = useState('');
 
     const closeModal = () => {
         setOpenModal(!openModal);
     }
+
+    useEffect(() => {
+        let crtuser = localStorage.getItem('profile'); 
+        setCurrentuser(crtuser as string);
+    }, []);
     
-    useEffect(()=>{
+    useEffect(() => {
         setOpenModal(true);
-    }, [user])
+        setUser(usersData.user);
+        localStorage.setItem('email', usersData?.user?.user?.username); 
+    }, [usersData])
 
     return (
         <>
             <Grid item container lg={12} md={12} sm={12} className="homepage-container">
                 <Grid item>
-                    {!(userData && userData.username) ? (
+                    {!(user?.user?.username) && !currentuser ? (
                         <>
-                            <p>Welcome to our portal</p>
+                            <h2>Welcome to our portal</h2>
                             <Button 
                                 variant="contained"
                                 size="small" 
@@ -42,7 +62,7 @@ function Homepage() {
                         </>
                     ) : (
                         <>
-                            <p>Welcome back {currentuser}</p>
+                            <h2>Welcome back {currentuser}</h2>
                             <Button 
                                 variant="contained"
                                 size="small" 
@@ -57,11 +77,24 @@ function Homepage() {
                 </Grid>
             </Grid>
             {/* To select user profiles */}
-            {(user && user.profiles.length > 1) && openModal && !currentuser && (
+            {(user?.profiles?.length > 1) && openModal && !currentuser && (
                 <AccountSelector open closeModal={closeModal} setCurrentuser={setCurrentuser} />
             )}
         </>
     )
 };
 
-export default React.memo(Homepage);
+function mapStateToProps(state: any): StateFromProps {
+    return {
+        usersData: selectUserState(state)
+    };
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchFromProps => ({
+});
+  
+export default connect<StateFromProps, DispatchFromProps>(
+    mapStateToProps,
+    mapDispatchToProps,
+)(React.memo(Homepage));
+  

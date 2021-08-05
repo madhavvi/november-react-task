@@ -2,8 +2,12 @@ import React, { useContext } from 'react';
 import {
     Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText, makeStyles
 } from '@material-ui/core';
-import { ProfileContext, UserContext } from '../../Utils/UserContext';
+import { ProfileContext } from '../../Utils/UserContext';
 import { deepPurple } from '@material-ui/core/colors';
+import { selectUserState } from '../../redux/login/loginSelector';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { Profile } from '../../Utils/models';
 
 const useStyles = makeStyles((theme) => ({
     dialogTitle: {
@@ -24,15 +28,44 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AccountSelector (props: any){
+
+interface StateFromProps {
+    usersData: ReturnType<typeof selectUserState>;
+ }
+
+interface DispatchFromProps { } 
+
+interface OwnProps {
+    open: boolean;
+    closeModal: () => void;
+    setCurrentuser: any;
+ }
+
+type Props = StateFromProps & DispatchFromProps & OwnProps;
+
+const AccountSelector: React.FC<Props> = ({
+    usersData,
+    open,
+    closeModal,
+    setCurrentuser,
+}) => {
+
+// function AccountSelector (props: any){
     const classes = useStyles();
-    const { user } = useContext(UserContext);
-    const { setProfile } = useContext(ProfileContext);
-    const profiles = user && user.profiles;
+    const { profile, setProfile } = useContext(ProfileContext);
+    const profiles = usersData && usersData.user && usersData.user.profiles;
+
+    const closemodal = () => {
+        if (profile) {
+            closeModal();
+        } else {
+            alert('Select account');
+        }
+    }
 
     return (
         <>
-            <Dialog open={props.open} fullWidth maxWidth="sm" className="dialog-container">
+            <Dialog open={open} fullWidth maxWidth="sm">
                 <DialogTitle >
                     <span className={classes.dialogTitle}>
                         Select Account
@@ -40,10 +73,11 @@ function AccountSelector (props: any){
                 </DialogTitle>
                 <DialogContent style={{ padding: '0' }}>
                     <List>
-                        {profiles.map(obj => (
+                        {profiles.map((obj: Profile) => (
                             <ListItem key={obj.id} className={classes.listItem} onClick={() => {
-                                props.setCurrentuser(obj.name);
-                                props.closeModal();
+                                setCurrentuser(obj?.name);
+                                localStorage.setItem('profile', obj?.name);
+                                closeModal();
                                 setProfile(obj);
                             }}>
                                 <Avatar className={classes.purple}>{obj.name.substring(0, 1)}</Avatar>
@@ -53,7 +87,7 @@ function AccountSelector (props: any){
                     </List>
                 </DialogContent>
                 <DialogActions style={{ padding: '24px 24px' }}>
-                    <Button size="small" color="primary" onClick={props.closeModal} className="confirm-btn">
+                    <Button size="small" color="primary" onClick={closemodal} className="confirm-btn">
                         CLOSE
                     </Button>
                 </DialogActions>
@@ -62,4 +96,18 @@ function AccountSelector (props: any){
     )
 }
 
-export default AccountSelector;
+
+function mapStateToProps(state: any): StateFromProps {
+    return {
+        usersData: selectUserState(state)
+    };
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchFromProps => ({
+});
+  
+export default connect<StateFromProps, DispatchFromProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps,
+)((AccountSelector));
+  

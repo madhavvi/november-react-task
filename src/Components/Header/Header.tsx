@@ -8,6 +8,12 @@ import './Header.css';
 function Header() {
     const history = useHistory();
 
+    const logout = () => {
+        localStorage.removeItem('email');
+        localStorage.removeItem('profile');
+        history.push('/login');
+    }
+
     return (
     <header className="header">
         <div className="wrapper">
@@ -17,7 +23,7 @@ function Header() {
                 </a>
             </div>
             <div className="align-vertical-center">
-                <Link onClick={() => history.push('/')}>
+                <Link onClick={() => logout()}>
                     <AccountCircleOutlinedIcon style={{ verticalAlign: 'middle' }} />
                     <span>Logout</span>
                 </Link>
