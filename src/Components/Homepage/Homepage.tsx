@@ -47,39 +47,51 @@ const Homepage: React.FC<Props> = ({
         <>
             <Grid item container lg={12} md={12} sm={12} className="homepage-container">
                 <Grid item>
-                    {!(user?.user?.username) && !currentuser ? (
-                        <>
-                            <h2>Welcome to our portal</h2>
-                            <Button 
-                                variant="contained"
-                                size="small" 
-                                color="default"
-                            >
-                                <Link onClick={() => history.push('/login')}>
-                                    Please go to Login
-                                </Link>
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <h2>Welcome back {currentuser}</h2>
-                            <Button 
-                                variant="contained"
-                                size="small" 
-                                color="default"
-                            >
-                                <Link onClick={() => history.push('/account')}>
-                                    My Account
-                                </Link>
-                            </Button>
-                        </>
-                    )}
+
+                {((user?.profiles?.length > 1) && openModal && !currentuser) ? 
+                (
+                    <AccountSelector open closeModal={closeModal} setCurrentuser={setCurrentuser} />
+                ) : (
+                    <>
+                        {(currentuser || (user && user.profiles.length && user.profiles[0])) ? (
+                            <Grid>
+                                <h2>Welcome back {currentuser || user.profiles[0].name}</h2>
+                                <Button 
+                                    variant="contained"
+                                    size="small" 
+                                    color="default"
+                                >
+                                    <Link onClick={() => history.push('/account')}>
+                                        My Account
+                                    </Link>
+                                </Button>
+                            </Grid>
+                        ) : (
+                            <Grid>
+                                {!(user?.user?.username) && !currentuser && (
+                                    <>
+                                        <h2>Welcome to our portal</h2>
+                                        <Button 
+                                            variant="contained"
+                                            size="small" 
+                                            color="default"
+                                        >
+                                            <Link onClick={() => history.push('/login')}>
+                                                Please go to Login
+                                            </Link>
+                                        </Button>
+                                    </>
+                                )}
+                            </Grid>
+                        )}
+                    </>
+                )}
                 </Grid>
             </Grid>
             {/* To select user profiles */}
-            {(user?.profiles?.length > 1) && openModal && !currentuser && (
+            {/* {(user?.profiles?.length > 1) && openModal && !currentuser && (
                 <AccountSelector open closeModal={closeModal} setCurrentuser={setCurrentuser} />
-            )}
+            )} */}
         </>
     )
 };
