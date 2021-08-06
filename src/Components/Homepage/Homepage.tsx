@@ -53,9 +53,9 @@ const Homepage: React.FC<Props> = ({
                     <AccountSelector open closeModal={closeModal} setCurrentuser={setCurrentuser} />
                 ) : (
                     <>
-                        {(currentuser || (user && user.profiles.length && user.profiles[0])) ? (
+                        {(currentuser || (user && user?.profiles?.length && user.profiles[0])) ? (
                             <Grid>
-                                <h2>Welcome back {currentuser || user.profiles[0].name}</h2>
+                                <h2>Welcome back {currentuser || user?.profiles[0].name}</h2>
                                 <Button 
                                     variant="contained"
                                     size="small" 
